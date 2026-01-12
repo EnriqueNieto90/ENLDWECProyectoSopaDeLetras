@@ -26,7 +26,10 @@ Interfaz.crearBotonComenzar();
 Interfaz.dibujarTablero(tablero, manejarClickJuego);
 Interfaz.crearPanelInfo(tamTab, palabras);
 Interfaz.crearTablaPuntuaciones();
-Interfaz.actualizarTablaPuntuaciones(Puntuaciones.obtenerPuntuaciones());
+
+// Inicializar y Cargar puntuaciones del nivel 0 (por defecto)
+Interfaz.actualizarTablaPuntuaciones(Puntuaciones.obtenerPuntuaciones(0));
+
 Interfaz.crearReloj();
 
 // Ocultar tablero hasta que se pulse comenzar
@@ -162,60 +165,46 @@ function finalizarJuego() {
     const tiempoFinalSegundos = Math.floor((Date.now() - tiempoInicio) / 1000);
     const minutos = Math.floor(tiempoFinalSegundos / 60);
     const segundos = tiempoFinalSegundos % 60;
-    const tiempoTexto = minutos + ' minutos y ' + segundos + ' segundos';
+    const tiempoTexto = minutos.toString().padStart(2, '0') + ':' + segundos.toString().padStart(2, '0');
     
     setTimeout(function() {
         alert('¡JUEGO TERMINADO!\n\nTu tiempo: ' + tiempoTexto);
         
-        // Comprobar si es tiempo récord
-        const posicionRecord = Puntuaciones.esTiempoRecord(tiempoFinalSegundos);
+        // Comprobar si es tiempo récord para el Nivel 0 (por defecto)
+        const posicionRecord = Puntuaciones.calcularPosicionRecord(tiempoFinalSegundos, 0);
         
         if (posicionRecord > 0) {
             alert('¡FELICIDADES! Has conseguido un récord en la posición ' + posicionRecord);
             
+            // Habilitar el input correspondiente
             Interfaz.habilitarInputNombre(posicionRecord);
             
             const inputNombre = document.querySelector('.input-nombre[data-posicion="' + posicionRecord + '"]');
             
+            // Clonamos el input para asegurarnos de limpiar listeners anteriores
+            const nuevoInput = inputNombre.cloneNode(true);
+            inputNombre.parentNode.replaceChild(nuevoInput, inputNombre);
+            
+            // Volvemos a habilitarlo tras el clonado
+            nuevoInput.disabled = false;
+            nuevoInput.focus();
+            
             // Guardar puntuación cuando el usuario presione Enter
-            inputNombre.addEventListener('keypress', function(e) {
+            nuevoInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
-                    const nombre = Interfaz.obtenerNombreInput(posicionRecord);
+                    let nombre = nuevoInput.value.trim();
+                    if (nombre === '') nombre = 'Anónimo';
                     
-                    // Reorganizar puntuaciones si hace falta
-                    const puntuacionesActuales = Puntuaciones.obtenerPuntuaciones();
-                    const nuevasPuntuaciones = [];
+                    // Guardamos la puntuación (la lógica interna ya ordena y recorta)
+                    Puntuaciones.guardarPuntuacion(nombre, tiempoFinalSegundos, 0);
                     
-                    let insertado = false;
-                    for (let i = 0; i < 3; i++) {
-                        if (i + 1 === posicionRecord && !insertado) {
-                            nuevasPuntuaciones.push({
-                                nombre: nombre,
-                                tiempo: formatearTiempo(tiempoFinalSegundos),
-                                segundos: tiempoFinalSegundos
-                            });
-                            insertado = true;
-                        }
-                        
-                        if (puntuacionesActuales[i] && nuevasPuntuaciones.length < 3) {
-                            if (i + 1 !== posicionRecord) {
-                                nuevasPuntuaciones.push(puntuacionesActuales[i]);
-                            }
-                        }
-                    }
+                    // Actualizamos la tabla
+                    Interfaz.actualizarTablaPuntuaciones(Puntuaciones.obtenerPuntuaciones(0));
                     
-                    Puntuaciones.guardarPuntuacion(nombre, tiempoFinalSegundos, posicionRecord);
-                    Interfaz.actualizarTablaPuntuaciones(nuevasPuntuaciones);
-                    
-                    inputNombre.disabled = true;
+                    nuevoInput.disabled = true;
+                    alert("¡Puntuación guardada correctamente!");
                 }
             });
         }
     }, 300);
-}
-
-function formatearTiempo(segundos) {
-    const minutos = Math.floor(segundos / 60);
-    const segs = segundos % 60;
-    return minutos.toString().padStart(2, '0') + ':' + segs.toString().padStart(2, '0');
 }

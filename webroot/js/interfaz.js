@@ -109,11 +109,16 @@ export function crearRelojJuego() {
 
 export function actualizarRelojJuego(segundos) {
     const relojJuegoDiv = document.getElementById('reloj-juego');
+    relojJuegoDiv.textContent = formatearSegundos(segundos);
+}
+
+// Función auxiliar para mostrar "01:30" en vez de "90"
+function formatearSegundos(segundos) {
     const minutos = Math.floor(segundos / 60);
     const segs = segundos % 60;
     const minStr = minutos.toString().padStart(2, '0');
     const segStr = segs.toString().padStart(2, '0');
-    relojJuegoDiv.textContent = minStr + ':' + segStr;
+    return minStr + ':' + segStr;
 }
 
 export function crearReloj() {
@@ -207,11 +212,13 @@ export function actualizarTablaPuntuaciones(puntuaciones) {
         const inputNombre = document.querySelector('.input-nombre[data-posicion="' + i + '"]');
         const celdaTiempo = document.querySelector('.celda-tiempo[data-posicion="' + i + '"]');
         
-        if (puntuaciones[i - 1]) {
-            const p = puntuaciones[i - 1];
-            inputNombre.value = p.nombre;
+        const datos = puntuaciones[i - 1]; // Array base 0
+
+        if (datos) {
+            inputNombre.value = datos.nombre;
             inputNombre.disabled = true;
-            celdaTiempo.textContent = p.tiempo;
+            // Formateamos el tiempo que ahora viene como número (segundos)
+            celdaTiempo.textContent = formatearSegundos(datos.puntuacion);
         } else {
             inputNombre.value = '';
             inputNombre.disabled = true;
