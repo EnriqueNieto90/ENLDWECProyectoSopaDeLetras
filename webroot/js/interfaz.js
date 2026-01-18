@@ -1,7 +1,7 @@
 const main = document.querySelector("main");
-const pie = document.querySelector("footer");
+const footerContainer = document.getElementById("contenedor-reloj-footer");
 
-// Crear contenedor para el juego (tablero + info)
+// Crear contenedor principal del juego
 const contenedorJuego = document.createElement('div');
 contenedorJuego.id = 'contenedor-juego';
 
@@ -20,25 +20,27 @@ export function crearBotonComenzar() {
     
     const boton = document.createElement('button');
     boton.id = 'btn-comenzar';
-    boton.textContent = 'COMENZAR JUEGO';
+    boton.innerHTML = '<i class="fa-solid fa-play"></i> COMENZAR JUEGO';
     
     contenedorBoton.appendChild(boton);
-    main.appendChild(contenedorBoton);
+    main.insertBefore(contenedorBoton, contenedorJuego);
 }
 
 export function ocultarBotonComenzar() {
     const contenedor = document.getElementById('contenedor-boton-inicio');
-    contenedor.classList.add('oculto');
+    if (contenedor) contenedor.classList.add('oculto');
 }
 
 export function mostrarTablero() {
     tableroContainer.classList.remove('oculto');
     infoContainer.classList.remove('oculto');
+    contenedorJuego.classList.remove('oculto');
 }
 
 export function ocultarTablero() {
     tableroContainer.classList.add('oculto');
     infoContainer.classList.add('oculto');
+    contenedorJuego.classList.add('oculto');
 }
 
 export function dibujarTablero(celdas, funcionClick) {
@@ -50,12 +52,9 @@ export function dibujarTablero(celdas, funcionClick) {
         for (let j = 0; j < celdas[i].length; j++) {
             const celda = document.createElement('td');
             celda.textContent = celdas[i][j];
-
             celda.dataset.fila = i;
             celda.dataset.col = j;
-
             celda.addEventListener('click', funcionClick);
-
             fila.appendChild(celda);
         }
         tabla.appendChild(fila);
@@ -67,11 +66,11 @@ export function crearPanelInfo(tamTab, palabras) {
     infoContainer.innerHTML = '';
     
     const titulo = document.createElement('h2');
-    titulo.textContent = 'Información';
+    titulo.innerHTML = '<i class="fa-solid fa-circle-info"></i> Información';
     infoContainer.appendChild(titulo);
     
     const tamInfo = document.createElement('p');
-    tamInfo.textContent = 'Tamaño del tablero: ' + tamTab + 'x' + tamTab;
+    tamInfo.innerHTML = `<strong>Tamaño:</strong> ${tamTab}x${tamTab}`;
     infoContainer.appendChild(tamInfo);
 
     const subtitulo = document.createElement('h3');
@@ -100,6 +99,8 @@ export function tacharDeLista(palabra) {
 }
 
 export function crearRelojJuego() {
+    if(document.getElementById("reloj-juego")) return;
+
     const relojJuegoDiv = document.createElement("div");
     relojJuegoDiv.id = "reloj-juego";
     relojJuegoDiv.textContent = '00:00';
@@ -109,10 +110,9 @@ export function crearRelojJuego() {
 
 export function actualizarRelojJuego(segundos) {
     const relojJuegoDiv = document.getElementById('reloj-juego');
-    relojJuegoDiv.textContent = formatearSegundos(segundos);
+    if(relojJuegoDiv) relojJuegoDiv.textContent = formatearSegundos(segundos);
 }
 
-// Función auxiliar para mostrar "01:30" en vez de "90"
 function formatearSegundos(segundos) {
     const minutos = Math.floor(segundos / 60);
     const segs = segundos % 60;
@@ -122,13 +122,13 @@ function formatearSegundos(segundos) {
 }
 
 export function crearReloj() {
+    const contenedorReloj = document.getElementById("contenedor-reloj-footer");
+    if (!contenedorReloj) return; 
+
     const relojDiv = document.createElement("div");
     relojDiv.id = "reloj";
     
-    const autor = document.createElement('p');
-    autor.textContent = 'Enrique Nieto Lorenzo';
-
-    pie.append(relojDiv, autor);
+    contenedorReloj.appendChild(relojDiv);
 
     function getHora() {
         const fecha = new Date();
@@ -147,7 +147,7 @@ export function crearTablaPuntuaciones() {
     seccionPuntuaciones.id = 'seccion-puntuaciones';
     
     const titulo = document.createElement('h2');
-    titulo.textContent = 'Top 3 Puntuaciones';
+    titulo.innerHTML = '<i class="fa-solid fa-trophy"></i> Top 3';
     
     const tabla = document.createElement('table');
     tabla.id = 'tabla-puntuaciones';
@@ -156,27 +156,26 @@ export function crearTablaPuntuaciones() {
     const filaCabecera = document.createElement('tr');
     
     const th1 = document.createElement('th');
-    
+    th1.textContent = '#';
     const th2 = document.createElement('th');
     th2.textContent = 'Nombre';
-    
     const th3 = document.createElement('th');
     th3.textContent = 'Tiempo';
     
-    filaCabecera.appendChild(th1);
-    filaCabecera.appendChild(th2);
-    filaCabecera.appendChild(th3);
+    filaCabecera.append(th1, th2, th3);
     thead.appendChild(filaCabecera);
     
     const tbody = document.createElement('tbody');
     tbody.id = 'cuerpo-puntuaciones';
     
-    // Crear 3 filas para las posiciones del top
     for (let i = 1; i <= 3; i++) {
         const fila = document.createElement('tr');
         
         const celdaPosicion = document.createElement('td');
         celdaPosicion.textContent = i;
+        celdaPosicion.style.textAlign = "center";
+        celdaPosicion.style.fontWeight = "bold";
+        celdaPosicion.style.color = "var(--color-principal)";
         
         const celdaNombre = document.createElement('td');
         const inputNombre = document.createElement('input');
@@ -191,19 +190,13 @@ export function crearTablaPuntuaciones() {
         celdaTiempo.dataset.posicion = i;
         celdaTiempo.textContent = '--:--';
         
-        fila.appendChild(celdaPosicion);
-        fila.appendChild(celdaNombre);
-        fila.appendChild(celdaTiempo);
-        
+        fila.append(celdaPosicion, celdaNombre, celdaTiempo);
         tbody.appendChild(fila);
     }
     
     tabla.appendChild(thead);
     tabla.appendChild(tbody);
-    
-    seccionPuntuaciones.appendChild(titulo);
-    seccionPuntuaciones.appendChild(tabla);
-    
+    seccionPuntuaciones.append(titulo, tabla);
     infoContainer.appendChild(seccionPuntuaciones);
 }
 
@@ -211,13 +204,11 @@ export function actualizarTablaPuntuaciones(puntuaciones) {
     for (let i = 1; i <= 3; i++) {
         const inputNombre = document.querySelector('.input-nombre[data-posicion="' + i + '"]');
         const celdaTiempo = document.querySelector('.celda-tiempo[data-posicion="' + i + '"]');
-        
-        const datos = puntuaciones[i - 1]; // Array base 0
+        const datos = puntuaciones[i - 1]; 
 
         if (datos) {
             inputNombre.value = datos.nombre;
             inputNombre.disabled = true;
-            // Formateamos el tiempo que ahora viene como número (segundos)
             celdaTiempo.textContent = formatearSegundos(datos.puntuacion);
         } else {
             inputNombre.value = '';
@@ -229,14 +220,16 @@ export function actualizarTablaPuntuaciones(puntuaciones) {
 
 export function habilitarInputNombre(posicion) {
     const inputNombre = document.querySelector('.input-nombre[data-posicion="' + posicion + '"]');
-    inputNombre.disabled = false;
-    inputNombre.focus();
-    inputNombre.placeholder = 'Escribe tu nombre';
+    if(inputNombre) {
+        inputNombre.disabled = false;
+        inputNombre.focus();
+        inputNombre.placeholder = '¡Récord! Tu nombre...';
+    }
 }
 
 export function obtenerNombreInput(posicion) {
     const inputNombre = document.querySelector('.input-nombre[data-posicion="' + posicion + '"]');
-    if (inputNombre.value.trim() !== '') {
+    if (inputNombre && inputNombre.value.trim() !== '') {
         return inputNombre.value.trim();
     }
     return 'Anónimo';
