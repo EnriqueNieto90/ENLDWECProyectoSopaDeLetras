@@ -5,6 +5,9 @@ const footerContainer = document.getElementById("contenedor-reloj-footer");
 const contenedorJuego = document.createElement('div');
 contenedorJuego.id = 'contenedor-juego';
 
+// Añadimos la clase 'oculto' para que no se vea hasta dar a 'Comenzar'
+contenedorJuego.classList.add('oculto');
+
 const tableroContainer = document.createElement('div');
 tableroContainer.id = 'tablero-container';
 

@@ -228,6 +228,10 @@ td:hover {
     background-color: #164225;
 }
 
+.oculto {
+    display: none !important;
+}
+
 /* --- TABLA PUNTUACIONES --- */
 #seccion-puntuaciones { margin-top: 30px; }
 
@@ -282,16 +286,46 @@ td:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap; 
+    gap: 20px;
 }
 
 #reloj {
     font-family: 'Courier New', monospace;
     background: #111;
-    color: var(--color-acento);
-    padding: 6px 12px;
-    border-radius: 6px;
-    border: 1px solid #333;
+    color: var(--color-acento); 
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: 1px solid #444;
     font-weight: bold;
+    font-size: 1.6rem; 
+    box-shadow: 0 0 10px rgba(129, 199, 132, 0.1);
+    letter-spacing: 2px;
 }
 
-.oculto { display: none !important; }
+.iconos-footer {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.iconos-footer a {
+    color: #bbb;
+    font-size: 1.5rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.iconos-footer a:hover {
+    color: var(--color-acento); 
+    transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .contenido-footer {
+        flex-direction: column;
+        text-align: center;
+    }
+}

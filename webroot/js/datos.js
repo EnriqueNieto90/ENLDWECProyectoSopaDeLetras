@@ -1,6 +1,9 @@
 export var palabras = [
-    "TELEFONO", "ORDENADOR"
+    "TELEFONO",
+    "ORDENADOR",
+    "AURICULARES",
 ];
+
 
 export var aDirecciones = [
     [1, 1, 0, -1, -1, -1, 0, 1], // Incremento Fila
