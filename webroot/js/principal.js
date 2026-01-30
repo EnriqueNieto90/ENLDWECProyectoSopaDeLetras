@@ -1,4 +1,4 @@
-import { palabras } from './datos.js';
+import { obtenerPalabras } from './datos.js';
 import * as Logica from './logica.js';
 import * as Interfaz from './interfaz.js';
 import * as Puntuaciones from './puntuaciones.js';
@@ -10,6 +10,9 @@ let tamTab = 0;
 let tiempoInicio = null;
 let intervaloReloj = null;
 let juegoIniciado = false;
+
+// Carga asíncrona de palabras antes de iniciar
+let palabras = await obtenerPalabras();
 
 // Calcular tamaño del tablero
 const TAM_PALABRA_MAYOR = Logica.palabramasLarga(palabras);

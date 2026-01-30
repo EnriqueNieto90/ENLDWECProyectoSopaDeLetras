@@ -6,9 +6,9 @@ export function inicializarPuntuaciones() {
         const puntuacionesIniciales = [
             // Nivel 0 (Por defecto)
             [
-                { "nombre": "AAA", "puntuacion": 100 },
-                { "nombre": "BBB", "puntuacion": 150 },
-                { "nombre": "CCC", "puntuacion": 200 }
+                { "nombre": "---", "puntuacion": 0 },
+                { "nombre": "---", "puntuacion": 0 },
+                { "nombre": "---", "puntuacion": 0 }
             ],
             // Nivel 1
             [
